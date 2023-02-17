@@ -1,0 +1,10 @@
+---
+- hosts: nginx
+  user: centos
+  become: yes
+  become_user: root
+  vars_files:
+    - /mnt/c/deleteMe/thesisProject/inventory/host_vars/b96773nginx.yaml
+
+  roles:
+    - { role: nginx_caching_server, tags: nginx_caching_server }

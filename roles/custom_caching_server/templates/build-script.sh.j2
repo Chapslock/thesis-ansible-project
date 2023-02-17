@@ -1,0 +1,6 @@
+#!/bin/bash
+
+scl enable llvm-toolset-7 'bash'
+scl enable devtoolset-7 'bash'
+cd {{cache_server_repo_path}}
+/root/.cargo/bin/cargo build

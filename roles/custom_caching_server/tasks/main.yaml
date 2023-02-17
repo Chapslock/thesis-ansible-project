@@ -1,0 +1,124 @@
+---
+- name: install epel-release, yum-utils, centos-release-scl
+  yum:
+    name:
+      - epel-release
+      - yum-utils
+      - centos-release-scl
+    state: latest
+
+- name: Install llvm-toolset-7 and devtoolset-7-gcc-c++
+  yum:
+    name:
+      - llvm-toolset-7
+      - devtoolset-7-gcc-c++
+    state: latest
+
+- name: install package nginx, git, c++ dev tools
+  yum:
+    name:
+      - git
+      - "@Development tools"
+    state: latest
+#      - gcc
+#      - gcc-c++
+
+- name: check if cargo/rust is installed
+  shell: /root/.cargo/bin/cargo -v
+  register: cargo_exists
+  ignore_errors: yes
+
+- name: Download Rust Installer
+  when: cargo_exists is failed
+  get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/sh.rustup.rs
+    mode: '0755'
+    force: 'yes'
+
+- name: install rust/cargo
+  when: cargo_exists is failed
+  shell: /tmp/sh.rustup.rs -y
+
+- name: Source Rust installation to env
+  shell:
+    cmd: "[ -f ~/.cargo/env ] && source $HOME/.cargo/env"
+
+- name: Clone the Rust backend server for Nginx
+  ansible.builtin.git:
+    repo: https://github.com/Chapslock/thesis-cache-server.git
+    dest: "{{cache_server_repo_path}}"
+    single_branch: yes
+    version: main
+
+- name: copy the build script to VM
+  template:
+    src: build-script.sh.j2
+    dest: /repos/build-script.sh
+    mode: 664
+
+#- name: Build the backend server NB! First time takes a long time
+#  shell:
+#    cmd: bash /repos/build-script.sh
+
+- name: set SELinux policies to permissive
+  shell:
+    cmd: setenforce 0
+
+- name: Create the directories /var/www/html
+  file:
+    path: /var/www/html
+    state: directory
+
+- name: Create the test.html file
+  template:
+    src: test.html.j2
+    dest: /var/www/html/test.html
+
+- name: Create the 100MB.html file
+  community.general.filesize:
+    path: /var/www/html/100MB.html
+    size: 100MB
+
+- name: Create the 1MB.html file
+  community.general.filesize:
+    path: /var/www/html/1MB.html
+    size: 1MB
+
+- name: Create the 10MB.html file
+  community.general.filesize:
+    path: /var/www/html/10MB.html
+    size: 10MB
+
+- name: Create the 500KB.html file
+  community.general.filesize:
+    path: /var/www/html/500KB.html
+    size: 500KB
+
+- name: Create the cache-server.service service
+  template:
+    src: cache-server.service.j2
+    dest: /etc/systemd/system/cache-server.service
+    mode: 664
+
+- name: Create the bash Script file to the cache-server.service
+  template:
+    src: run-cache-server.sh.j2
+    dest: "{{run_cache_server_script_path}}"
+
+- name: reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Start the newly created cache-server service
+  systemd:
+    name: cache-server
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
+
+- name: Copy the resource monitoring script to system
+  template:
+    src: monitor.sh.j2
+    dest: /root/monitor.sh
+    mode: 777

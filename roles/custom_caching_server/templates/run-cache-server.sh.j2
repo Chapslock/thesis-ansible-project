@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source scl_source enable llvm-toolset-7
+source scl_source enable devtoolset-7
+echo "Activated clang version 5.+ and gcc version 7.+"
+cd {{cache_server_repo_path}}
+/root/.cargo/bin/cargo build
+echo "Done compiling the cache server. Running the executable next!"
+"{{cache_server_repo_path }}"/target/debug/{{cache_server_executable_name}}

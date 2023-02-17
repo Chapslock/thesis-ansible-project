@@ -1,0 +1,5 @@
+---
+hostname: b96773custom
+cache_server_repo_path: /repos/thesis-cache-server
+cache_server_executable_name: http-test-server
+run_cache_server_script_path: /root/run-cache-server.sh

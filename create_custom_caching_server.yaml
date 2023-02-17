@@ -1,0 +1,10 @@
+---
+- hosts: custom
+  user: centos
+  become: yes
+  become_user: root
+  vars_files:
+    - /mnt/c/deleteMe/thesisProject/inventory/host_vars/b96773custom.yaml
+
+  roles:
+    - { role: custom_caching_server, tags: custom_caching_server }

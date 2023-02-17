@@ -1,0 +1,24 @@
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=custom_cache:10m inactive=10m;
+#proxy_cache_path - defines the location of the cache on the filesystem
+
+upstream origin-server {
+    server 127.0.0.1:8080;
+}
+
+server {
+    listen 80; #for ipv4
+    listen [::]:80; #for ipv6
+    server_name _; #all servers
+    location / {
+        proxy_pass http://origin-server;
+        #uses the cache we defined earlier
+        proxy_cache custom_cache;
+        #We will cache anything and it will be valid for 10 min
+        proxy_cache_valid any 5m;
+        #Header for tracking cache hits and misses (testing purposes)
+        add_header X-Proxy-Cache $upstream_cache_status;
+
+        #Nginx cache purging is only available in NGINX PLUS
+        #proxy_cache_purge $purge_method;
+    }
+}

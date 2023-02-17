@@ -1,0 +1,15 @@
+#!/bin/bash
+# This script monitors CPU and memory usage
+# Inspiration from: https://linuxconfig.org/bash-script-to-monitor-cpu-and-memory-usage-on-linux
+
+echo -e "CPU(%),Memory(MB)"
+while :
+do
+  # Get the current usage of CPU and memory
+  cpu=$(top -bn1 | awk '/Cpu/ { print $2}')
+  memory=$(free -m | awk '/Mem/{print $3}')
+
+  echo -e "$cpu , $memory"
+
+  sleep 1
+done

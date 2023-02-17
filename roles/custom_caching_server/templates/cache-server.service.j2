@@ -1,0 +1,8 @@
+[Unit]
+Description= Build and Run Rust Cache server
+
+[Service]
+ExecStart=/bin/bash /root/run-cache-server.sh
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,76 @@
+---
+- name: install epel-release
+  yum:
+    name:
+      - epel-release
+    state: latest
+
+- name: install package nginx, apache
+  yum:
+    name:
+      - nginx
+      - httpd
+    state: latest
+
+- name: set SELinux policies to permissive
+  shell:
+    cmd: setenforce 0
+
+- name: Disable default nginx webpage
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: Create the caching proxy .conf file for nginx and set it to listen on port 80
+  template:
+    src: cache.conf.j2
+    dest: /etc/nginx/conf.d/cache.conf
+
+- name: set apache port to 8080
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+
+- name: start and enable apache service
+  systemd:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Create the test.html file
+  template:
+    src: test.html.j2
+    dest: /var/www/html/test.html
+
+- name: Create the 100MB.html file
+  community.general.filesize:
+    path: /var/www/html/100MB.html
+    size: 100MB
+
+- name: Create the 1MB.html file
+  community.general.filesize:
+    path: /var/www/html/1MB.html
+    size: 1MB
+
+- name: Create the 10MB.html file
+  community.general.filesize:
+    path: /var/www/html/10MB.html
+    size: 10MB
+
+- name: Create the 500KB.html file
+  community.general.filesize:
+    path: /var/www/html/500KB.html
+    size: 500KB
+
+- name: restart and enable nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
+
+- name: Copy the resource monitoring script to system
+  template:
+    src: monitor.sh.j2
+    dest: /root/monitor.sh
+    mode: 777

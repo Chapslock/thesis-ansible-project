@@ -1,0 +1,10 @@
+---
+- hosts: varnish
+  user: centos
+  become: yes
+  become_user: root
+  vars_files:
+    - /mnt/c/deleteMe/thesisProject/inventory/host_vars/b96773varnish.yaml
+
+  roles:
+    - { role: varnish_caching_server, tags: varnish_caching_server }

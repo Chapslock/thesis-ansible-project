@@ -1,0 +1,92 @@
+---
+- name: install apache, epel-release, pygpgme, yum-utils
+  yum:
+    name:
+      - httpd
+      - epel-release
+      - pygpgme
+      - yum-utils
+    state: latest
+
+- name: set SELinux policies to permissive
+  shell:
+    cmd: setenforce 0
+
+- name: set apache port to 8080
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+
+- name: start and enable apache service
+  systemd:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Create the test.html file
+  template:
+    src: test.html.j2
+    dest: /var/www/html/test.html
+
+- name: Create the 100MB.html file
+  community.general.filesize:
+    path: /var/www/html/100MB.html
+    size: 100MB
+
+- name: Create the 1MB.html file
+  community.general.filesize:
+    path: /var/www/html/1MB.html
+    size: 1MB
+
+- name: Create the 10MB.html file
+  community.general.filesize:
+    path: /var/www/html/10MB.html
+    size: 10MB
+
+- name: Create the 500KB.html file
+  community.general.filesize:
+    path: /var/www/html/500KB.html
+    size: 500KB
+
+- name: Add the varnish cache repository
+  template:
+    src: varnish60lts.repo.j2
+    dest: /etc/yum.repos.d/varnish60lts.repo
+
+- name: Update yum cache for varnish repo
+  shell:
+    cmd: yum -q makecache -y --disablerepo='*' --enablerepo='varnish60lts'
+
+- name: Install varnish
+  yum:
+    name:
+      - varnish
+    state: latest
+
+- name: enable varnish at system boot
+  systemd:
+    name: varnish
+    enabled: yes
+
+- name: Configure varnish to listen on port 80
+  template:
+    src: varnish.service.j2
+    dest: /usr/lib/systemd/system/varnish.service
+
+- name: Allow cache purging in varnish
+  template:
+    src: default.vcl.j2
+    dest: /etc/varnish/default.vcl
+
+- name: restart varnish
+  systemd:
+    name: varnish
+    enabled: yes
+    daemon_reload: yes
+    state: restarted
+
+- name: Copy the resource monitoring script to system
+  template:
+    src: monitor.sh.j2
+    dest: /root/monitor.sh
+    mode: 777
