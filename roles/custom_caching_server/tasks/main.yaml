@@ -18,6 +18,8 @@
   yum:
     name:
       - git
+      - sysstat
+      - iotop
       - "@Development tools"
     state: latest
 #      - gcc

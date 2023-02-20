@@ -26,7 +26,7 @@ ExecStart=/usr/sbin/varnishd \
           -a localhost:8443,PROXY \
           -p feature=+http2 \
           -f /etc/varnish/default.vcl \
-          -s malloc,256m
+          -s default=file,/var/lib/varnish/varnish_storage.bin,1G
 ExecReload=/usr/sbin/varnishreload
 
 [Install]

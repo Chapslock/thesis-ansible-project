@@ -2,14 +2,18 @@
 # This script monitors CPU and memory usage
 # Inspiration from: https://linuxconfig.org/bash-script-to-monitor-cpu-and-memory-usage-on-linux
 
-echo -e "CPU(%),Memory(MB)"
+echo -e "Date, timestamp(s), CPU(%), Memory(MB), TOTAL DISK READ(B/s), TOTAL DISK WRITE(B/s)"
 while :
 do
   # Get the current usage of CPU and memory
   cpu=$(top -bn1 | awk '/Cpu/ { print $2}')
   memory=$(free -m | awk '/Mem/{print $3}')
+  dateTime=$(date)
+  timestamp=$(date +%s)
+  diskWrite=$(iotop -bn1 | awk 'NR==1 { print $12 }')
+  diskRead=$(iotop -bn1 | awk 'NR==1 { print $5 }')
 
-  echo -e "$cpu , $memory"
+  echo -e "$dateTime , $timestamp , $cpu , $memory , $diskRead, $diskWrite"
 
   sleep 1
 done

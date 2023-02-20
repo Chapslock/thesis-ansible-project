@@ -6,6 +6,8 @@
       - epel-release
       - pygpgme
       - yum-utils
+      - sysstat
+      - iotop
     state: latest
 
 - name: set SELinux policies to permissive

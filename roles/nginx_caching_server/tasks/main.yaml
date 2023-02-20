@@ -10,6 +10,8 @@
     name:
       - nginx
       - httpd
+      - sysstat
+      - iotop
     state: latest
 
 - name: set SELinux policies to permissive
