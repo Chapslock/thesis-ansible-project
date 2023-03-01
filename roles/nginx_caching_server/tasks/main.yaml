@@ -44,6 +44,11 @@
     src: test.html.j2
     dest: /var/www/html/test.html
 
+- name: Create the 3GB.html file
+  community.general.filesize:
+    path: /var/www/html/3GB.html
+    size: 3GB
+
 - name: Create the 100MB.html file
   community.general.filesize:
     path: /var/www/html/100MB.html

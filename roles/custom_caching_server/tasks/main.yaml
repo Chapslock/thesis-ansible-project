@@ -51,6 +51,7 @@
     repo: https://github.com/Chapslock/thesis-cache-server.git
     dest: "{{cache_server_repo_path}}"
     single_branch: yes
+    force: yes
     version: main
 
 - name: copy the build script to VM
@@ -76,6 +77,11 @@
   template:
     src: test.html.j2
     dest: /var/www/html/test.html
+
+- name: Create the 3GB.html file
+  community.general.filesize:
+    path: /var/www/html/3GB.html
+    size: 3GB
 
 - name: Create the 100MB.html file
   community.general.filesize:
