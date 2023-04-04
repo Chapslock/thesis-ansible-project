@@ -30,30 +30,41 @@
     src: test.html.j2
     dest: /var/www/html/test.html
 
-- name: Create the 3GB.html file
+- name: Create the 500KB.html file
   community.general.filesize:
-    path: /var/www/html/3GB.html
-    size: 3GB
-
-- name: Create the 100MB.html file
-  community.general.filesize:
-    path: /var/www/html/100MB.html
-    size: 100MB
+    path: /var/www/html/500KB.html
+    size: 500KB
 
 - name: Create the 1MB.html file
   community.general.filesize:
     path: /var/www/html/1MB.html
     size: 1MB
 
+- name: Create the 5MB.html file
+  community.general.filesize:
+    path: /var/www/html/5MB.html
+    size: 5MB
+
 - name: Create the 10MB.html file
   community.general.filesize:
     path: /var/www/html/10MB.html
     size: 10MB
 
-- name: Create the 500KB.html file
+- name: Create the 20MB.html file
   community.general.filesize:
-    path: /var/www/html/500KB.html
-    size: 500KB
+    path: /var/www/html/20MB.html
+    size: 20MB
+
+- name: Create the 50MB.html file
+  community.general.filesize:
+    path: /var/www/html/50MB.html
+    size: 50MB
+
+- name: Create the 100MB.html file
+  community.general.filesize:
+    path: /var/www/html/100MB.html
+    size: 100MB
+
 
 - name: Add the varnish cache repository
   template:
