@@ -6,5 +6,7 @@ echo "Activated clang version 5.+ and gcc version 7.+";
 cd {{cache_server_repo_path}};
 git pull;
 /root/.cargo/bin/cargo build;
-echo "Done compiling the cache server. Running the executable next!";
+#/root/.cargo/bin/cargo build --release;
+echo "If there were errors during compilation, the previous working version of the server is run!";
 "{{cache_server_repo_path }}"/target/debug/{{cache_server_executable_name}};
+#"{{cache_server_repo_path }}"/target/release/{{cache_server_executable_name}};

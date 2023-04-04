@@ -14,7 +14,7 @@ server {
         #uses the cache we defined earlier
         proxy_cache custom_cache;
         #We will cache anything and it will be valid for 10 min
-        proxy_cache_valid any 5m;
+        proxy_cache_valid any 10m;
         #Header for tracking cache hits and misses (testing purposes)
         add_header X-Proxy-Cache $upstream_cache_status;
 
